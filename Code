@@ -1,0 +1,45 @@
+NY_Births <- scan("http://robjhyndman.com/tsdldata/data/nybirths.dat")
+Birth_ts <- ts(NY_Births, frequency=12, start=c(1946,1))
+Birth_ts
+plot.ts(Birth_ts)
+
+## Holts-Winters additive forcast model
+adddecomp = decompose(Birth_ts, type = "additive")
+plot(adddecomp)
+
+HW_add <- hw(Birth_ts, seasonal = "additive")
+plot(HW_add)
+
+HW_add$model
+forecast(HW_add, 8)
+plot(residuals(HW_add))
+
+checkresiduals(HW_add)
+accuracy(HW_add)
+
+
+## ARIMA Model
+
+Birth_Diff <- diff(Birth_ts, differences = 1)
+plot(Birth_Diff)
+
+Birth_Arima <- auto.arima(Birth_ts)
+plot(forecast(Birth_Arima, h = 8))
+Birth_Arima
+forecast(Birth_Arima, 8)
+plot(residuals(Birth_Arima))
+
+checkresiduals(Birth_Arima)
+accuracy(Birth_Arima)
+
+
+## ETS Model
+
+Birth_ETS <- ets(NY_Births, model = "ZZZ")
+ETS_for <- forecast(Birth_ETS, h = 8)
+autoplot(ETS_for)
+ETS_for
+ETS_for$model
+
+checkresiduals(ETS_for)
+accuracy(ETS_for)
